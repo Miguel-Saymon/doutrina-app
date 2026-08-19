@@ -1,0 +1,24 @@
+{
+  "name": "doutrina-teste",
+  "version": "1.0.0",
+  "description": "Aplicativo mobile do doutrina.net",
+  "main": "node_modules/expo/AppEntry.js",
+  "scripts": {
+    "start": "expo start",
+    "android": "expo start --android",
+    "ios": "expo start --ios"
+  },
+  "keywords": [],
+  "license": "ISC",
+  "dependencies": {
+    "expo": "^54.0.37",
+    "expo-status-bar": "~3.0.9",
+    "react": "19.1.0",
+    "react-native": "0.81.5"
+  },
+  "devDependencies": {
+    "@types/react": "~19.1.10",
+    "typescript": "~5.9.2"
+  },
+  "private": true
+}
