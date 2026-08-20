@@ -31,7 +31,15 @@ function createPreview(html: string, maxLength = 180): string {
     return text;
   }
 
-  return `${text.slice(0, maxLength).trim()}…`;
+  const truncated = text.slice(0, maxLength);
+  const lastSpace = truncated.lastIndexOf(' ');
+
+  const preview =
+    lastSpace > 0
+      ? truncated.slice(0, lastSpace)
+      : truncated;
+
+  return `${preview.trim()}…`;
 }
 
 export function mapBloggerEntryToPost(entry: BloggerEntry): Post {
