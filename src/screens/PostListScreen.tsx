@@ -1,7 +1,5 @@
 import {
-  ActivityIndicator,
   FlatList,
-  Pressable,
   RefreshControl,
   StyleSheet,
   Text,
@@ -10,6 +8,8 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { ErrorState } from '../components/ErrorState';
+import { LoadingState } from '../components/LoadingState';
+import { PostListItem } from '../components/PostListItem';
 import { usePosts } from '../hooks/usePosts';
 import { Post } from '../types/post';
 
@@ -39,13 +39,7 @@ export function PostListScreen({
 
   if (loading) {
     return (
-      <View style={styles.center}>
-        <ActivityIndicator />
-
-        <Text style={styles.statusText}>
-          Carregando publicações...
-        </Text>
-      </View>
+      <LoadingState message="Carregando publicações..." />
     );
   }
 
@@ -99,27 +93,10 @@ export function PostListScreen({
           </Text>
         }
         renderItem={({ item }) => (
-          <Pressable
+          <PostListItem
+            post={item}
             onPress={() => onOpenPost(item)}
-            style={({ pressed }) => [
-              styles.article,
-              pressed && styles.articlePressed,
-            ]}
-          >
-            <Text style={styles.title}>
-              {item.title}
-            </Text>
-
-            {!!item.preview && (
-              <Text style={styles.preview}>
-                {item.preview}
-              </Text>
-            )}
-
-            <Text style={styles.readMore}>
-              Ler artigo
-            </Text>
-          </Pressable>
+          />
         )}
       />
     </SafeAreaView>
@@ -159,52 +136,6 @@ const styles = StyleSheet.create({
     marginTop: 10,
     fontSize: 13,
     lineHeight: 19,
-    color: '#737373',
-  },
-
-  article: {
-    paddingVertical: 20,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: '#D9D9D9',
-  },
-
-  articlePressed: {
-    opacity: 0.55,
-  },
-
-  title: {
-    fontSize: 18,
-    lineHeight: 25,
-    fontWeight: '600',
-    color: '#171717',
-  },
-
-  preview: {
-    marginTop: 9,
-    fontSize: 14,
-    lineHeight: 21,
-    color: '#666666',
-  },
-
-  readMore: {
-    marginTop: 12,
-    fontSize: 13,
-    fontWeight: '600',
-    color: '#444444',
-  },
-
-  center: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 24,
-    backgroundColor: '#FFFFFF',
-  },
-
-  statusText: {
-    marginTop: 10,
-    fontSize: 14,
-    textAlign: 'center',
     color: '#737373',
   },
 

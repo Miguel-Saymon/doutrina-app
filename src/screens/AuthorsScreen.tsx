@@ -1,8 +1,6 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import {
-  ActivityIndicator,
   FlatList,
-  Pressable,
   RefreshControl,
   StyleSheet,
   Text,
@@ -11,6 +9,8 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { ErrorState } from '../components/ErrorState';
+import { LoadingState } from '../components/LoadingState';
+import { NavigationListItem } from '../components/NavigationListItem';
 import { usePosts } from '../hooks/usePosts';
 import { RootStackParamList } from '../navigation/navigationTypes';
 import { getAuthorsFromPosts } from '../services/postClassifier';
@@ -34,13 +34,7 @@ export function AuthorsScreen({ navigation }: Props) {
 
   if (loading) {
     return (
-      <View style={styles.center}>
-        <ActivityIndicator />
-
-        <Text style={styles.statusText}>
-          Carregando autores...
-        </Text>
-      </View>
+      <LoadingState message="Carregando autores..." />
     );
   }
 
@@ -88,25 +82,14 @@ export function AuthorsScreen({ navigation }: Props) {
           </Text>
         }
         renderItem={({ item }) => (
-          <Pressable
-            style={({ pressed }) => [
-              styles.author,
-              pressed && styles.authorPressed,
-            ]}
+          <NavigationListItem
+            title={item}
             onPress={() =>
               navigation.navigate('AuthorPosts', {
                 author: item,
               })
             }
-          >
-            <Text style={styles.authorName}>
-              {item}
-            </Text>
-
-            <Text style={styles.arrow}>
-              ›
-            </Text>
-          </Pressable>
+          />
         )}
       />
     </SafeAreaView>
@@ -139,48 +122,6 @@ const styles = StyleSheet.create({
     marginTop: 10,
     fontSize: 13,
     lineHeight: 19,
-    color: '#737373',
-  },
-
-  author: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 19,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: '#D9D9D9',
-  },
-
-  authorPressed: {
-    opacity: 0.55,
-  },
-
-  authorName: {
-    flex: 1,
-    paddingRight: 16,
-    fontSize: 17,
-    lineHeight: 23,
-    fontWeight: '500',
-    color: '#171717',
-  },
-
-  arrow: {
-    fontSize: 28,
-    fontWeight: '300',
-    color: '#8A8A8A',
-  },
-
-  center: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 24,
-    backgroundColor: '#FFFFFF',
-  },
-
-  statusText: {
-    marginTop: 10,
-    fontSize: 14,
-    textAlign: 'center',
     color: '#737373',
   },
 
