@@ -13,17 +13,61 @@ function getLabels(entry: BloggerEntry): string[] {
 
 function cleanHtml(html: string): string {
   return html
-    // Remove blocos de CSS e scripts.
+    // Remove CSS e scripts incorporados.
     .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '')
     .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '')
 
-    // Remove tags específicas geradas pelo Microsoft Office.
+    // Remove comentários do Word e outros editores.
+    .replace(/<!--[\s\S]*?-->/g, '')
+
+    // Remove tags específicas do Microsoft Office.
     .replace(/<\/?o:p[^>]*>/gi, '')
     .replace(/<\/?w:[^>]*>/gi, '')
     .replace(/<\/?v:[^>]*>/gi, '')
 
-    // Remove comentários HTML, comuns em conteúdo vindo do Word.
-    .replace(/<!--[\s\S]*?-->/g, '');
+    // Remove elementos sem utilidade no leitor mobile.
+    .replace(/<\/?meta[^>]*>/gi, '')
+    .replace(/<\/?link[^>]*>/gi, '')
+
+    // Remove classes geradas pelo Word.
+    .replace(/\sclass=(["'])Mso[^"']*\1/gi, '')
+
+    // Remove atributos de largura fixa.
+    .replace(/\swidth=(["'])?\d+(px)?\1?/gi, '')
+    .replace(/\sheight=(["'])?\d+(px)?\1?/gi, '')
+
+    // Remove propriedades CSS que normalmente quebram o layout mobile.
+    .replace(
+      /style=(["'])(.*?)\1/gi,
+      (_, quote: string, styles: string) => {
+        const safeStyles = styles
+          .split(';')
+          .map((style) => style.trim())
+          .filter(Boolean)
+          .filter((style) => {
+            const normalized = style.toLowerCase();
+
+            return !(
+              normalized.startsWith('width:') ||
+              normalized.startsWith('min-width:') ||
+              normalized.startsWith('max-width:') ||
+              normalized.startsWith('height:') ||
+              normalized.startsWith('position:') ||
+              normalized.startsWith('left:') ||
+              normalized.startsWith('right:') ||
+              normalized.startsWith('top:') ||
+              normalized.startsWith('bottom:') ||
+              normalized.startsWith('margin-left:') ||
+              normalized.startsWith('margin-right:')
+            );
+          })
+          .join('; ');
+
+        return safeStyles
+          ? `style=${quote}${safeStyles}${quote}`
+          : '';
+      },
+    );
 }
 
 function stripHtml(html: string): string {
@@ -35,11 +79,16 @@ function stripHtml(html: string): string {
     .replace(/&amp;/gi, '&')
     .replace(/&quot;/gi, '"')
     .replace(/&#39;/gi, "'")
+    .replace(/&lt;/gi, '<')
+    .replace(/&gt;/gi, '>')
     .replace(/\s+/g, ' ')
     .trim();
 }
 
-function createPreview(html: string, maxLength = 180): string {
+function createPreview(
+  html: string,
+  maxLength = 180,
+): string {
   const text = stripHtml(html);
 
   if (text.length <= maxLength) {
@@ -63,8 +112,6 @@ export function mapBloggerEntryToPost(
   const rawHtml = entry.content?.$t ?? '';
   const html = cleanHtml(rawHtml);
 
-  const labels = getLabels(entry);
-
   return {
     id: entry.id.$t,
 
@@ -80,7 +127,7 @@ export function mapBloggerEntryToPost(
 
     url: getPostUrl(entry),
 
-    labels,
+    labels: getLabels(entry),
 
     authors: [],
 

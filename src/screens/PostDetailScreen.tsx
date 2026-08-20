@@ -1,7 +1,6 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { useEffect } from 'react';
+import { useMemo } from 'react';
 import {
-  ActivityIndicator,
   Linking,
   ScrollView,
   StyleSheet,
@@ -13,6 +12,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import RenderHTML from 'react-native-render-html';
 
 import { ErrorState } from '../components/ErrorState';
+import { LoadingState } from '../components/LoadingState';
 import { usePosts } from '../hooks/usePosts';
 import { RootStackParamList } from '../navigation/navigationTypes';
 
@@ -44,14 +44,17 @@ export function PostDetailScreen({ route }: Props) {
 
   const post = getPostById(postId);
 
-  useEffect(() => {
-    if (!loading && posts.length > 0 && !post) {
-      console.warn(
-        'Publicação não encontrada no cache:',
-        postId,
-      );
-    }
-  }, [loading, posts.length, post, postId]);
+  const contentWidth = Math.max(
+    width - 48,
+    0,
+  );
+
+  const computeEmbeddedMaxWidth = useMemo(
+    () =>
+      (availableWidth: number) =>
+        availableWidth,
+    [],
+  );
 
   async function handleLinkPress(
     _: unknown,
@@ -74,13 +77,7 @@ export function PostDetailScreen({ route }: Props) {
 
   if (loading && posts.length === 0) {
     return (
-      <View style={styles.center}>
-        <ActivityIndicator />
-
-        <Text style={styles.statusText}>
-          Carregando artigo...
-        </Text>
-      </View>
+      <LoadingState message="Carregando artigo..." />
     );
   }
 
@@ -116,6 +113,7 @@ export function PostDetailScreen({ route }: Props) {
       <ScrollView
         contentContainerStyle={styles.container}
         showsVerticalScrollIndicator={false}
+        horizontal={false}
       >
         <View style={styles.header}>
           <Text style={styles.title}>
@@ -132,30 +130,120 @@ export function PostDetailScreen({ route }: Props) {
         <View style={styles.separator} />
 
         <RenderHTML
-          contentWidth={width - 48}
+          contentWidth={contentWidth}
           source={{
             html: post.html,
           }}
+          computeEmbeddedMaxWidth={
+            computeEmbeddedMaxWidth
+          }
+          enableExperimentalBRCollapsing
+          enableExperimentalGhostLinesPrevention
           renderersProps={{
             a: {
               onPress: handleLinkPress,
             },
+            img: {
+              enableExperimentalPercentWidth: true,
+            },
           }}
-          baseStyle={styles.htmlBase}
-          tagsStyles={{
-            p: styles.htmlParagraph,
-            h1: styles.htmlHeading,
-            h2: styles.htmlHeading,
-            h3: styles.htmlSubheading,
-            li: styles.htmlListItem,
-            blockquote: styles.htmlBlockquote,
-            a: styles.htmlLink,
-          }}
+          baseStyle={htmlBaseStyle}
+          tagsStyles={htmlTagsStyles}
         />
       </ScrollView>
     </SafeAreaView>
   );
 }
+
+const htmlBaseStyle = {
+  fontSize: 16,
+  lineHeight: 26,
+  color: '#2B2B2B',
+};
+
+const htmlTagsStyles = {
+  body: {
+    margin: 0,
+    padding: 0,
+  },
+
+  p: {
+    marginTop: 0,
+    marginBottom: 18,
+  },
+
+  div: {
+    maxWidth: '100%',
+  },
+
+  h1: {
+    marginTop: 30,
+    marginBottom: 14,
+    fontSize: 23,
+    lineHeight: 30,
+    fontWeight: '600' as const,
+    color: '#171717',
+  },
+
+  h2: {
+    marginTop: 28,
+    marginBottom: 12,
+    fontSize: 21,
+    lineHeight: 28,
+    fontWeight: '600' as const,
+    color: '#171717',
+  },
+
+  h3: {
+    marginTop: 24,
+    marginBottom: 10,
+    fontSize: 19,
+    lineHeight: 26,
+    fontWeight: '600' as const,
+    color: '#171717',
+  },
+
+  img: {
+    maxWidth: '100%',
+    height: 'auto',
+    marginTop: 12,
+    marginBottom: 16,
+  },
+
+  table: {
+    maxWidth: '100%',
+  },
+
+  blockquote: {
+    marginTop: 18,
+    marginBottom: 18,
+    marginLeft: 0,
+    paddingLeft: 16,
+    borderLeftWidth: 2,
+    borderLeftColor: '#D9D9D9',
+    color: '#555555',
+  },
+
+  ul: {
+    marginTop: 8,
+    marginBottom: 18,
+    paddingLeft: 20,
+  },
+
+  ol: {
+    marginTop: 8,
+    marginBottom: 18,
+    paddingLeft: 20,
+  },
+
+  li: {
+    marginBottom: 8,
+  },
+
+  a: {
+    textDecorationLine: 'underline' as const,
+  },
+};
 
 const styles = StyleSheet.create({
   safeArea: {
@@ -192,51 +280,6 @@ const styles = StyleSheet.create({
     height: StyleSheet.hairlineWidth,
     marginBottom: 24,
     backgroundColor: '#D9D9D9',
-  },
-
-  htmlBase: {
-    fontSize: 16,
-    lineHeight: 26,
-    color: '#2B2B2B',
-  },
-
-  htmlParagraph: {
-    marginTop: 0,
-    marginBottom: 18,
-  },
-
-  htmlHeading: {
-    marginTop: 28,
-    marginBottom: 12,
-    fontSize: 22,
-    lineHeight: 29,
-    fontWeight: '600',
-    color: '#171717',
-  },
-
-  htmlSubheading: {
-    marginTop: 24,
-    marginBottom: 10,
-    fontSize: 19,
-    lineHeight: 26,
-    fontWeight: '600',
-    color: '#171717',
-  },
-
-  htmlListItem: {
-    marginBottom: 8,
-  },
-
-  htmlBlockquote: {
-    marginVertical: 18,
-    paddingLeft: 16,
-    borderLeftWidth: 2,
-    borderLeftColor: '#D9D9D9',
-    color: '#555555',
-  },
-
-  htmlLink: {
-    textDecorationLine: 'underline',
   },
 
   center: {
