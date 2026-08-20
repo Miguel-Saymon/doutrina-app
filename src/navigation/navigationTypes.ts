@@ -8,5 +8,10 @@ export type RootStackParamList = {
   };
 
   Areas: undefined;
+
+  AreaPosts: {
+    area: string;
+  };
+
   Graduation: undefined;
 };

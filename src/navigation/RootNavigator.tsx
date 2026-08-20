@@ -4,6 +4,8 @@ import {
 } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
+import { AreaPostsScreen } from '../screens/AreaPostsScreen';
+import { AreasScreen } from '../screens/AreasScreen';
 import { AuthorPostsScreen } from '../screens/AuthorPostsScreen';
 import { AuthorsScreen } from '../screens/AuthorsScreen';
 import { CategoryPlaceholderScreen } from '../screens/CategoryPlaceholderScreen';
@@ -66,14 +68,19 @@ export function RootNavigator() {
 
         <Stack.Screen
           name="Areas"
+          component={AreasScreen}
           options={{
             title: 'Áreas do Direito',
           }}
-        >
-          {() => (
-            <CategoryPlaceholderScreen title="Áreas do Direito" />
-          )}
-        </Stack.Screen>
+        />
+
+        <Stack.Screen
+          name="AreaPosts"
+          component={AreaPostsScreen}
+          options={{
+            title: 'Publicações',
+          }}
+        />
 
         <Stack.Screen
           name="Graduation"

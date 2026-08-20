@@ -1,10 +1,19 @@
+import { LEGACY_AREAS } from '../constants/legacyAreas';
 import { LEGACY_AUTHORS } from '../constants/legacyAuthors';
 import { Post } from '../types/post';
 
 const AUTHOR_PREFIX = 'autor:';
+const AREA_PREFIX = 'area:';
 
 function normalize(value: string): string {
   return value.trim().toLocaleLowerCase('pt-BR');
+}
+
+function splitLabel(label: string): string[] {
+  return label
+    .split(';')
+    .map((part) => part.trim())
+    .filter(Boolean);
 }
 
 export function getAuthorsFromPost(post: Post): string[] {
@@ -17,8 +26,6 @@ export function getAuthorsFromPost(post: Post): string[] {
       continue;
     }
 
-    // Formato novo/padronizado:
-    // autor:Nome do Autor
     if (normalize(label).startsWith(AUTHOR_PREFIX)) {
       const author = label.slice(AUTHOR_PREFIX.length).trim();
 
@@ -29,15 +36,7 @@ export function getAuthorsFromPost(post: Post): string[] {
       continue;
     }
 
-    // Formato legado.
-    //
-    // Também reconhece autores conhecidos dentro de labels compostas:
-    //
-    // Direito Privado; Autor A; Autor B
-    const parts = label
-      .split(';')
-      .map((part) => part.trim())
-      .filter(Boolean);
+    const parts = splitLabel(label);
 
     for (const part of parts) {
       const legacyAuthor = LEGACY_AUTHORS.find(
@@ -79,6 +78,72 @@ export function getPostsByAuthor(
     getAuthorsFromPost(post).some(
       (postAuthor) =>
         normalize(postAuthor) === normalizedAuthor,
+    ),
+  );
+}
+
+export function getAreasFromPost(post: Post): string[] {
+  const areas = new Set<string>();
+
+  for (const rawLabel of post.labels) {
+    const label = rawLabel.trim();
+
+    if (!label) {
+      continue;
+    }
+
+    if (normalize(label).startsWith(AREA_PREFIX)) {
+      const area = label.slice(AREA_PREFIX.length).trim();
+
+      if (area) {
+        areas.add(area);
+      }
+
+      continue;
+    }
+
+    const parts = splitLabel(label);
+
+    for (const part of parts) {
+      const legacyArea = LEGACY_AREAS.find(
+        (area) => normalize(area) === normalize(part),
+      );
+
+      if (legacyArea) {
+        areas.add(legacyArea);
+      }
+    }
+  }
+
+  return [...areas];
+}
+
+export function getAreasFromPosts(posts: Post[]): string[] {
+  const areas = new Set<string>();
+
+  for (const post of posts) {
+    for (const area of getAreasFromPost(post)) {
+      areas.add(area);
+    }
+  }
+
+  return [...areas].sort((a, b) =>
+    a.localeCompare(b, 'pt-BR', {
+      sensitivity: 'base',
+    }),
+  );
+}
+
+export function getPostsByArea(
+  posts: Post[],
+  area: string,
+): Post[] {
+  const normalizedArea = normalize(area);
+
+  return posts.filter((post) =>
+    getAreasFromPost(post).some(
+      (postArea) =>
+        normalize(postArea) === normalizedArea,
     ),
   );
 }
