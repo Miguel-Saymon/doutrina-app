@@ -11,10 +11,25 @@ function getLabels(entry: BloggerEntry): string[] {
   return entry.category?.map((category) => category.term) ?? [];
 }
 
-function stripHtml(html: string): string {
+function cleanHtml(html: string): string {
   return html
-    .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, ' ')
-    .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, ' ')
+    // Remove blocos de CSS e scripts.
+    .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '')
+    .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '')
+
+    // Remove tags específicas geradas pelo Microsoft Office.
+    .replace(/<\/?o:p[^>]*>/gi, '')
+    .replace(/<\/?w:[^>]*>/gi, '')
+    .replace(/<\/?v:[^>]*>/gi, '')
+
+    // Remove comentários HTML, comuns em conteúdo vindo do Word.
+    .replace(/<!--[\s\S]*?-->/g, '');
+}
+
+function stripHtml(html: string): string {
+  const cleanedHtml = cleanHtml(html);
+
+  return cleanedHtml
     .replace(/<[^>]+>/g, ' ')
     .replace(/&nbsp;/gi, ' ')
     .replace(/&amp;/gi, '&')
@@ -42,26 +57,35 @@ function createPreview(html: string, maxLength = 180): string {
   return `${preview.trim()}…`;
 }
 
-export function mapBloggerEntryToPost(entry: BloggerEntry): Post {
-  const html = entry.content?.$t ?? '';
+export function mapBloggerEntryToPost(
+  entry: BloggerEntry,
+): Post {
+  const rawHtml = entry.content?.$t ?? '';
+  const html = cleanHtml(rawHtml);
+
   const labels = getLabels(entry);
 
   return {
     id: entry.id.$t,
+
     title: entry.title?.$t ?? 'Sem título',
+
     html,
+
     preview: createPreview(html),
 
     publishedAt: entry.published?.$t ?? '',
+
     updatedAt: entry.updated?.$t ?? '',
 
     url: getPostUrl(entry),
 
     labels,
 
-    // Classificação será implementada depois.
     authors: [],
+
     areas: [],
+
     isGraduation: false,
   };
 }

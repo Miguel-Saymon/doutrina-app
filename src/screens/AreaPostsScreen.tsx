@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import {
   ActivityIndicator,
   FlatList,
+  Pressable,
   StyleSheet,
   Text,
   View,
@@ -19,7 +20,10 @@ type Props = NativeStackScreenProps<
   'AreaPosts'
 >;
 
-export function AreaPostsScreen({ route }: Props) {
+export function AreaPostsScreen({
+  route,
+  navigation,
+}: Props) {
   const { area } = route.params;
 
   const [posts, setPosts] = useState<Post[]>([]);
@@ -108,7 +112,17 @@ export function AreaPostsScreen({ route }: Props) {
           </Text>
         }
         renderItem={({ item }) => (
-          <View style={styles.article}>
+          <Pressable
+            onPress={() =>
+              navigation.navigate('PostDetail', {
+                postId: item.id,
+              })
+            }
+            style={({ pressed }) => [
+              styles.article,
+              pressed && styles.articlePressed,
+            ]}
+          >
             <Text style={styles.title}>
               {item.title}
             </Text>
@@ -118,7 +132,11 @@ export function AreaPostsScreen({ route }: Props) {
                 {item.preview}
               </Text>
             )}
-          </View>
+
+            <Text style={styles.readMore}>
+              Ler artigo
+            </Text>
+          </Pressable>
         )}
       />
     </SafeAreaView>
@@ -160,6 +178,10 @@ const styles = StyleSheet.create({
     borderBottomColor: '#D9D9D9',
   },
 
+  articlePressed: {
+    opacity: 0.55,
+  },
+
   title: {
     fontSize: 18,
     lineHeight: 25,
@@ -172,6 +194,13 @@ const styles = StyleSheet.create({
     fontSize: 14,
     lineHeight: 21,
     color: '#666666',
+  },
+
+  readMore: {
+    marginTop: 12,
+    fontSize: 13,
+    fontWeight: '600',
+    color: '#444444',
   },
 
   center: {

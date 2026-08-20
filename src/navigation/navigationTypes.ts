@@ -16,4 +16,8 @@ export type RootStackParamList = {
   Graduation: undefined;
 
   About: undefined;
+
+  PostDetail: {
+    postId: string;
+  };
 };

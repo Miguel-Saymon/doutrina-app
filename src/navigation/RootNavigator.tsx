@@ -11,6 +11,7 @@ import { AuthorPostsScreen } from '../screens/AuthorPostsScreen';
 import { AuthorsScreen } from '../screens/AuthorsScreen';
 import { GraduationScreen } from '../screens/GraduationScreen';
 import { HomeScreen } from '../screens/HomeScreen';
+import { PostDetailScreen } from '../screens/PostDetailScreen';
 import { RootStackParamList } from './navigationTypes';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -96,6 +97,14 @@ export function RootNavigator() {
           component={AboutScreen}
           options={{
             title: 'Sobre Nós',
+          }}
+        />
+
+        <Stack.Screen
+          name="PostDetail"
+          component={PostDetailScreen}
+          options={{
+            title: 'Artigo',
           }}
         />
       </Stack.Navigator>
