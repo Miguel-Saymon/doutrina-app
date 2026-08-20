@@ -1,16 +1,17 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { useEffect, useState } from 'react';
 import {
   ActivityIndicator,
   FlatList,
   Pressable,
+  RefreshControl,
   StyleSheet,
   Text,
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { getPosts } from '../api/blogger/bloggerClient';
+import { ErrorState } from '../components/ErrorState';
+import { usePosts } from '../hooks/usePosts';
 import { RootStackParamList } from '../navigation/navigationTypes';
 import { getAuthorsFromPosts } from '../services/postClassifier';
 
@@ -20,33 +21,16 @@ type Props = NativeStackScreenProps<
 >;
 
 export function AuthorsScreen({ navigation }: Props) {
-  const [authors, setAuthors] = useState<string[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const {
+    posts,
+    loading,
+    refreshing,
+    error,
+    refresh,
+    retry,
+  } = usePosts();
 
-  useEffect(() => {
-    async function loadAuthors() {
-      try {
-        setLoading(true);
-        setError(null);
-
-        const posts = await getPosts();
-        const result = getAuthorsFromPosts(posts);
-
-        setAuthors(result);
-      } catch (err) {
-        setError(
-          err instanceof Error
-            ? err.message
-            : 'Não foi possível carregar os autores.',
-        );
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    loadAuthors();
-  }, []);
+  const authors = getAuthorsFromPosts(posts);
 
   if (loading) {
     return (
@@ -60,17 +44,13 @@ export function AuthorsScreen({ navigation }: Props) {
     );
   }
 
-  if (error) {
+  if (error && authors.length === 0) {
     return (
-      <View style={styles.center}>
-        <Text style={styles.errorTitle}>
-          Não foi possível carregar os autores.
-        </Text>
-
-        <Text style={styles.statusText}>
-          {error}
-        </Text>
-      </View>
+      <ErrorState
+        title="Não foi possível carregar os autores."
+        message={error}
+        onRetry={retry}
+      />
     );
   }
 
@@ -83,11 +63,23 @@ export function AuthorsScreen({ navigation }: Props) {
         data={authors}
         keyExtractor={(item) => item}
         contentContainerStyle={styles.list}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={refresh}
+          />
+        }
         ListHeaderComponent={
           <View style={styles.intro}>
             <Text style={styles.introText}>
               Selecione um autor para visualizar suas publicações.
             </Text>
+
+            {!!error && (
+              <Text style={styles.warning}>
+                Não foi possível atualizar agora. Exibindo os dados já carregados.
+              </Text>
+            )}
           </View>
         }
         ListEmptyComponent={
@@ -143,6 +135,13 @@ const styles = StyleSheet.create({
     color: '#737373',
   },
 
+  warning: {
+    marginTop: 10,
+    fontSize: 13,
+    lineHeight: 19,
+    color: '#737373',
+  },
+
   author: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -183,13 +182,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     textAlign: 'center',
     color: '#737373',
-  },
-
-  errorTitle: {
-    fontSize: 17,
-    fontWeight: '600',
-    color: '#171717',
-    textAlign: 'center',
   },
 
   emptyText: {

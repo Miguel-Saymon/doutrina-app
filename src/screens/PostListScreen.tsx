@@ -1,15 +1,16 @@
-import { useEffect, useState } from 'react';
 import {
   ActivityIndicator,
   FlatList,
   Pressable,
+  RefreshControl,
   StyleSheet,
   Text,
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { getPosts } from '../api/blogger/bloggerClient';
+import { ErrorState } from '../components/ErrorState';
+import { usePosts } from '../hooks/usePosts';
 import { Post } from '../types/post';
 
 type Props = {
@@ -25,33 +26,16 @@ export function PostListScreen({
   filterPosts,
   onOpenPost,
 }: Props) {
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const {
+    posts: allPosts,
+    loading,
+    refreshing,
+    error,
+    refresh,
+    retry,
+  } = usePosts();
 
-  useEffect(() => {
-    async function loadPosts() {
-      try {
-        setLoading(true);
-        setError(null);
-
-        const allPosts = await getPosts();
-        const filteredPosts = filterPosts(allPosts);
-
-        setPosts(filteredPosts);
-      } catch (err) {
-        setError(
-          err instanceof Error
-            ? err.message
-            : 'Não foi possível carregar as publicações.',
-        );
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    loadPosts();
-  }, [filterPosts]);
+  const posts = filterPosts(allPosts);
 
   if (loading) {
     return (
@@ -65,17 +49,13 @@ export function PostListScreen({
     );
   }
 
-  if (error) {
+  if (error && posts.length === 0) {
     return (
-      <View style={styles.center}>
-        <Text style={styles.errorTitle}>
-          Não foi possível carregar as publicações.
-        </Text>
-
-        <Text style={styles.statusText}>
-          {error}
-        </Text>
-      </View>
+      <ErrorState
+        title="Não foi possível carregar as publicações."
+        message={error}
+        onRetry={retry}
+      />
     );
   }
 
@@ -88,6 +68,12 @@ export function PostListScreen({
         data={posts}
         keyExtractor={(item) => item.id}
         contentContainerStyle={styles.list}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={refresh}
+          />
+        }
         ListHeaderComponent={
           <View style={styles.intro}>
             <Text style={styles.contextTitle}>
@@ -99,6 +85,12 @@ export function PostListScreen({
                 ? '1 publicação'
                 : `${posts.length} publicações`}
             </Text>
+
+            {!!error && (
+              <Text style={styles.warning}>
+                Não foi possível atualizar agora. Exibindo os dados já carregados.
+              </Text>
+            )}
           </View>
         }
         ListEmptyComponent={
@@ -163,6 +155,13 @@ const styles = StyleSheet.create({
     color: '#737373',
   },
 
+  warning: {
+    marginTop: 10,
+    fontSize: 13,
+    lineHeight: 19,
+    color: '#737373',
+  },
+
   article: {
     paddingVertical: 20,
     borderBottomWidth: StyleSheet.hairlineWidth,
@@ -207,13 +206,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     textAlign: 'center',
     color: '#737373',
-  },
-
-  errorTitle: {
-    fontSize: 17,
-    fontWeight: '600',
-    textAlign: 'center',
-    color: '#171717',
   },
 
   emptyText: {
