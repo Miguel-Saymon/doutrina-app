@@ -2,6 +2,7 @@ import {
   Pressable,
   StyleSheet,
   Text,
+  View,
 } from 'react-native';
 
 import {
@@ -27,28 +28,34 @@ export function NavigationListItem({
         pressed && styles.pressed,
       ]}
     >
-      <Text style={styles.title}>
-        {title}
-      </Text>
+      <View style={styles.content}>
+        <Text style={styles.title}>
+          {title}
+        </Text>
 
-      <Text style={styles.arrow}>
-        ›
-      </Text>
+        <Text style={styles.arrow}>
+          ›
+        </Text>
+      </View>
     </Pressable>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 19,
+    minHeight: 70,
+    justifyContent: 'center',
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: colors.border,
   },
 
   pressed: {
     opacity: colors.action.pressedOpacity,
+  },
+
+  content: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
 
   title: {
@@ -60,7 +67,8 @@ const styles = StyleSheet.create({
 
   arrow: {
     fontSize: 28,
-    fontWeight: '300',
-    color: '#8A8A8A',
+    lineHeight: 30,
+    fontWeight: '400',
+    color: colors.brand.primary,
   },
 });

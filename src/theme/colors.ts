@@ -1,17 +1,26 @@
 export const colors = {
-  background: '#FFFFFF',
+  background: '#000000',
+
+  surface: '#111111',
+  surfaceElevated: '#171717',
 
   text: {
-    primary: '#171717',
-    secondary: '#737373',
-    body: '#333333',
-    muted: '#666666',
+    primary: '#FFFFFF',
+    secondary: '#B3B3B3',
+    body: '#E5E5E5',
+    muted: '#A3A3A3',
   },
 
-  border: '#D9D9D9',
+  border: '#2D2D2D',
+
+  brand: {
+    primary: '#FF1F1F',
+    link: '#168BFF',
+  },
 
   action: {
-    primary: '#444444',
+    primary: '#FFFFFF',
+    secondary: '#B3B3B3',
     pressedOpacity: 0.55,
   },
 };

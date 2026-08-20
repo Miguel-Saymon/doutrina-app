@@ -1,5 +1,6 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import {
+  Image,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -15,7 +16,10 @@ import {
   typography,
 } from '../theme';
 
-type Props = NativeStackScreenProps<RootStackParamList, 'Home'>;
+type Props = NativeStackScreenProps<
+  RootStackParamList,
+  'Home'
+>;
 
 type NavigationCardProps = {
   title: string;
@@ -62,19 +66,48 @@ export function HomeScreen({ navigation }: Props) {
         contentContainerStyle={styles.container}
         showsVerticalScrollIndicator={false}
       >
-        <View style={styles.header}>
-          <Text style={styles.brand}>
-            doutrina.net
-          </Text>
+        <View style={styles.brandSection}>
+          <View style={styles.logoViewport}>
+            <Image
+              source={require('../../assets/images/doutrina-logo.png')}
+              style={styles.logo}
+              resizeMode="contain"
+              accessible
+              accessibilityLabel="doutrina.net"
+            />
+          </View>
 
-          <Text style={styles.subtitle}>
-            Público · Democrático · Gratuito
-          </Text>
+          <View style={styles.tagline}>
+            <Text style={styles.taglineText}>
+              Público
+            </Text>
+
+            <Text style={styles.taglineDot}>
+              •
+            </Text>
+
+            <Text style={styles.taglineText}>
+              Democrático
+            </Text>
+
+            <Text style={styles.taglineDot}>
+              •
+            </Text>
+
+            <Text style={styles.taglineText}>
+              Gratuito
+            </Text>
+          </View>
         </View>
 
         <View style={styles.intro}>
+          <Text style={styles.introEyebrow}>
+            ACERVO JURÍDICO
+          </Text>
+
           <Text style={styles.introTitle}>
-            Conhecimento jurídico ao seu alcance.
+            Conhecimento jurídico{'\n'}
+            ao seu alcance.
           </Text>
 
           <Text style={styles.introText}>
@@ -87,25 +120,33 @@ export function HomeScreen({ navigation }: Props) {
           <NavigationCard
             title="Autores"
             description="Explore publicações por autor"
-            onPress={() => navigation.navigate('Authors')}
+            onPress={() =>
+              navigation.navigate('Authors')
+            }
           />
 
           <NavigationCard
             title="Áreas do Direito"
             description="Navegue pelas áreas jurídicas"
-            onPress={() => navigation.navigate('Areas')}
+            onPress={() =>
+              navigation.navigate('Areas')
+            }
           />
 
           <NavigationCard
             title="Graduação"
             description="Conteúdos acadêmicos em desenvolvimento"
-            onPress={() => navigation.navigate('Graduation')}
+            onPress={() =>
+              navigation.navigate('Graduation')
+            }
           />
 
           <NavigationCard
             title="Sobre Nós"
             description="Conheça o propósito do doutrina.net"
-            onPress={() => navigation.navigate('About')}
+            onPress={() =>
+              navigation.navigate('About')
+            }
           />
         </View>
       </ScrollView>
@@ -122,49 +163,93 @@ const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
     paddingHorizontal: spacing.xxl,
-    paddingTop: spacing.xl,
-    paddingBottom: spacing.huge,
+    paddingTop: spacing.md,
+    paddingBottom: spacing.section,
   },
 
-  header: {
-    marginBottom: spacing.hero,
+  brandSection: {
+    alignItems: 'center',
+    marginTop: spacing.sm,
+    marginBottom: spacing.xxxl,
   },
 
-  brand: {
-    ...typography.brand,
-    color: colors.text.primary,
+  logoViewport: {
+    width: '100%',
+    height: 105,
+    alignItems: 'center',
+    justifyContent: 'center',
+    overflow: 'hidden',
   },
 
-  subtitle: {
-    marginTop: spacing.xs,
-    ...typography.caption,
+  logo: {
+    width: 320,
+    height: 226,
+  },
+
+  tagline: {
+    marginTop: spacing.md,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexWrap: 'wrap',
+  },
+
+  taglineText: {
+    ...typography.small,
     color: colors.text.secondary,
   },
 
+  taglineDot: {
+    marginHorizontal: spacing.md,
+    fontSize: 14,
+    fontWeight: '700',
+    color: colors.brand.primary,
+  },
+
   intro: {
-    maxWidth: 440,
-    marginBottom: 38,
+    alignItems: 'center',
+    marginBottom: spacing.xxxl,
+  },
+
+  introEyebrow: {
+    marginBottom: spacing.md,
+    fontSize: 11,
+    fontWeight: '700',
+    letterSpacing: 1.6,
+    textAlign: 'center',
+    color: colors.brand.primary,
   },
 
   introTitle: {
-    ...typography.heroTitle,
+    fontSize: 26,
+    lineHeight: 33,
+    fontWeight: '600',
+    letterSpacing: -0.45,
+    textAlign: 'center',
     color: colors.text.primary,
   },
 
   introText: {
-    marginTop: spacing.md,
+    marginTop: spacing.lg,
+    maxWidth: 360,
     ...typography.body,
+    textAlign: 'center',
     color: colors.text.muted,
   },
 
   navigation: {
-    gap: 2,
+    gap: spacing.sm,
   },
 
   card: {
-    paddingVertical: 22,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: colors.border,
+    minHeight: 96,
+    paddingHorizontal: spacing.lg,
+    paddingVertical: spacing.md,
+    justifyContent: 'center',
+    backgroundColor: colors.surface,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: colors.border,
+    borderRadius: 12,
   },
 
   cardPressed: {
@@ -187,14 +272,15 @@ const styles = StyleSheet.create({
   },
 
   cardDescription: {
-    marginTop: 5,
+    marginTop: spacing.xs,
     ...typography.small,
     color: colors.text.secondary,
   },
 
   arrow: {
     fontSize: 30,
-    fontWeight: '300',
-    color: '#8A8A8A',
+    lineHeight: 32,
+    fontWeight: '400',
+    color: colors.brand.primary,
   },
 });

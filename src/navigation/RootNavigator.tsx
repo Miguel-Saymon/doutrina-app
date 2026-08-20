@@ -1,5 +1,5 @@
 import {
-  DefaultTheme,
+  DarkTheme,
   NavigationContainer,
 } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -18,14 +18,17 @@ import { RootStackParamList } from './navigationTypes';
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 const navigationTheme = {
-  ...DefaultTheme,
+  ...DarkTheme,
 
   colors: {
-    ...DefaultTheme.colors,
+    ...DarkTheme.colors,
+
+    primary: colors.brand.primary,
     background: colors.background,
     card: colors.background,
     text: colors.text.primary,
     border: colors.border,
+    notification: colors.brand.primary,
   },
 };
 
@@ -36,14 +39,25 @@ export function RootNavigator() {
         id="RootStack"
         initialRouteName="Home"
         screenOptions={{
+          headerStyle: {
+            backgroundColor: colors.background,
+          },
+
+          headerTintColor: colors.text.primary,
+
           headerShadowVisible: false,
+
           headerBackTitle: 'Voltar',
+
           headerTitleStyle: {
             fontWeight: '600',
           },
+
           contentStyle: {
             backgroundColor: colors.background,
           },
+
+          animation: 'slide_from_right',
         }}
       >
         <Stack.Screen
