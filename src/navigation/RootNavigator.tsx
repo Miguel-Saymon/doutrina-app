@@ -32,6 +32,7 @@ export function RootNavigator() {
   return (
     <NavigationContainer theme={navigationTheme}>
       <Stack.Navigator
+        id="RootStack"
         initialRouteName="Home"
         screenOptions={{
           headerShadowVisible: false,

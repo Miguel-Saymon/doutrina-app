@@ -1,5 +1,5 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import {
   ActivityIndicator,
   Linking,
@@ -12,9 +12,9 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import RenderHTML from 'react-native-render-html';
 
-import { getPosts } from '../api/blogger/bloggerClient';
+import { ErrorState } from '../components/ErrorState';
+import { usePosts } from '../hooks/usePosts';
 import { RootStackParamList } from '../navigation/navigationTypes';
-import { Post } from '../types/post';
 
 type Props = NativeStackScreenProps<
   RootStackParamList,
@@ -34,39 +34,24 @@ export function PostDetailScreen({ route }: Props) {
   const { postId } = route.params;
   const { width } = useWindowDimensions();
 
-  const [post, setPost] = useState<Post | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const {
+    posts,
+    loading,
+    error,
+    retry,
+    getPostById,
+  } = usePosts();
+
+  const post = getPostById(postId);
 
   useEffect(() => {
-    async function loadPost() {
-      try {
-        setLoading(true);
-        setError(null);
-
-        const posts = await getPosts();
-
-        const foundPost =
-          posts.find((item) => item.id === postId) ?? null;
-
-        if (!foundPost) {
-          throw new Error('Publicação não encontrada.');
-        }
-
-        setPost(foundPost);
-      } catch (err) {
-        setError(
-          err instanceof Error
-            ? err.message
-            : 'Não foi possível carregar a publicação.',
-        );
-      } finally {
-        setLoading(false);
-      }
+    if (!loading && posts.length > 0 && !post) {
+      console.warn(
+        'Publicação não encontrada no cache:',
+        postId,
+      );
     }
-
-    loadPost();
-  }, [postId]);
+  }, [loading, posts.length, post, postId]);
 
   async function handleLinkPress(
     _: unknown,
@@ -87,7 +72,7 @@ export function PostDetailScreen({ route }: Props) {
     }
   }
 
-  if (loading) {
+  if (loading && posts.length === 0) {
     return (
       <View style={styles.center}>
         <ActivityIndicator />
@@ -99,15 +84,25 @@ export function PostDetailScreen({ route }: Props) {
     );
   }
 
-  if (error || !post) {
+  if (error && posts.length === 0) {
+    return (
+      <ErrorState
+        title="Não foi possível abrir o artigo."
+        message={error}
+        onRetry={retry}
+      />
+    );
+  }
+
+  if (!post) {
     return (
       <View style={styles.center}>
         <Text style={styles.errorTitle}>
-          Não foi possível abrir o artigo.
+          Publicação não encontrada.
         </Text>
 
         <Text style={styles.statusText}>
-          {error}
+          Atualize a listagem e tente novamente.
         </Text>
       </View>
     );
