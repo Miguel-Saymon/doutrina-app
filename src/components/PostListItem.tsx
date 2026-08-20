@@ -4,6 +4,7 @@ import {
   Text,
 } from 'react-native';
 
+import { colors, spacing, typography } from '../theme';
 import { Post } from '../types/post';
 
 type Props = {
@@ -42,33 +43,31 @@ export function PostListItem({
 
 const styles = StyleSheet.create({
   container: {
-    paddingVertical: 20,
+    paddingVertical: spacing.xl,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: '#D9D9D9',
+    borderBottomColor: colors.border,
   },
 
   pressed: {
-    opacity: 0.55,
+    opacity: colors.action.pressedOpacity,
   },
 
   title: {
-    fontSize: 18,
-    lineHeight: 25,
-    fontWeight: '600',
-    color: '#171717',
+    ...typography.postTitle,
+    color: colors.text.primary,
   },
 
   preview: {
     marginTop: 9,
     fontSize: 14,
     lineHeight: 21,
-    color: '#666666',
+    color: colors.text.muted,
   },
 
   readMore: {
-    marginTop: 12,
+    marginTop: spacing.md,
     fontSize: 13,
     fontWeight: '600',
-    color: '#444444',
+    color: colors.action.primary,
   },
 });

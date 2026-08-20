@@ -5,6 +5,12 @@ import {
   View,
 } from 'react-native';
 
+import {
+  colors,
+  spacing,
+  typography,
+} from '../theme';
+
 type Props = {
   title?: string;
   message?: string | null;
@@ -48,27 +54,26 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingHorizontal: 24,
-    backgroundColor: '#FFFFFF',
+    paddingHorizontal: spacing.xxl,
+    backgroundColor: colors.background,
   },
 
   title: {
     fontSize: 17,
     fontWeight: '600',
     textAlign: 'center',
-    color: '#171717',
+    color: colors.text.primary,
   },
 
   message: {
-    marginTop: 8,
-    fontSize: 14,
-    lineHeight: 20,
+    marginTop: spacing.sm,
+    ...typography.small,
     textAlign: 'center',
-    color: '#737373',
+    color: colors.text.secondary,
   },
 
   button: {
-    marginTop: 20,
+    marginTop: spacing.xl,
     paddingHorizontal: 18,
     paddingVertical: 11,
     borderWidth: StyleSheet.hairlineWidth,
@@ -77,12 +82,12 @@ const styles = StyleSheet.create({
   },
 
   buttonPressed: {
-    opacity: 0.55,
+    opacity: colors.action.pressedOpacity,
   },
 
   buttonText: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#171717',
+    color: colors.text.primary,
   },
 });

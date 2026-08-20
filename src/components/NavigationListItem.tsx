@@ -4,6 +4,12 @@ import {
   Text,
 } from 'react-native';
 
+import {
+  colors,
+  spacing,
+  typography,
+} from '../theme';
+
 type Props = {
   title: string;
   onPress: () => void;
@@ -38,20 +44,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 19,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: '#D9D9D9',
+    borderBottomColor: colors.border,
   },
 
   pressed: {
-    opacity: 0.55,
+    opacity: colors.action.pressedOpacity,
   },
 
   title: {
     flex: 1,
-    paddingRight: 16,
-    fontSize: 17,
-    lineHeight: 23,
-    fontWeight: '500',
-    color: '#171717',
+    paddingRight: spacing.lg,
+    ...typography.listTitle,
+    color: colors.text.primary,
   },
 
   arrow: {

@@ -5,6 +5,12 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import {
+  colors,
+  spacing,
+  typography,
+} from '../theme';
+
 export function GraduationScreen() {
   return (
     <SafeAreaView
@@ -30,12 +36,12 @@ export function GraduationScreen() {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.background,
   },
 
   container: {
     flex: 1,
-    paddingHorizontal: 24,
+    paddingHorizontal: spacing.xxl,
   },
 
   content: {
@@ -45,18 +51,14 @@ const styles = StyleSheet.create({
   },
 
   title: {
-    fontSize: 28,
-    lineHeight: 35,
-    fontWeight: '600',
-    letterSpacing: -0.4,
-    color: '#171717',
+    ...typography.screenTitle,
+    color: colors.text.primary,
   },
 
   description: {
-    marginTop: 12,
+    marginTop: spacing.md,
     maxWidth: 440,
-    fontSize: 16,
-    lineHeight: 24,
-    color: '#666666',
+    ...typography.body,
+    color: colors.text.muted,
   },
 });

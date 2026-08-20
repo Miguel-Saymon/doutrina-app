@@ -9,6 +9,11 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { RootStackParamList } from '../navigation/navigationTypes';
+import {
+  colors,
+  spacing,
+  typography,
+} from '../theme';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Home'>;
 
@@ -111,31 +116,29 @@ export function HomeScreen({ navigation }: Props) {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.background,
   },
 
   container: {
     flexGrow: 1,
-    paddingHorizontal: 24,
-    paddingTop: 20,
-    paddingBottom: 40,
+    paddingHorizontal: spacing.xxl,
+    paddingTop: spacing.xl,
+    paddingBottom: spacing.huge,
   },
 
   header: {
-    marginBottom: 54,
+    marginBottom: spacing.hero,
   },
 
   brand: {
-    fontSize: 30,
-    fontWeight: '700',
-    letterSpacing: -0.8,
-    color: '#111111',
+    ...typography.brand,
+    color: colors.text.primary,
   },
 
   subtitle: {
-    marginTop: 4,
-    fontSize: 13,
-    color: '#737373',
+    marginTop: spacing.xs,
+    ...typography.caption,
+    color: colors.text.secondary,
   },
 
   intro: {
@@ -144,18 +147,14 @@ const styles = StyleSheet.create({
   },
 
   introTitle: {
-    fontSize: 27,
-    lineHeight: 34,
-    fontWeight: '600',
-    letterSpacing: -0.5,
-    color: '#171717',
+    ...typography.heroTitle,
+    color: colors.text.primary,
   },
 
   introText: {
-    marginTop: 12,
-    fontSize: 16,
-    lineHeight: 24,
-    color: '#666666',
+    marginTop: spacing.md,
+    ...typography.body,
+    color: colors.text.muted,
   },
 
   navigation: {
@@ -165,11 +164,11 @@ const styles = StyleSheet.create({
   card: {
     paddingVertical: 22,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: '#D9D9D9',
+    borderBottomColor: colors.border,
   },
 
   cardPressed: {
-    opacity: 0.55,
+    opacity: colors.action.pressedOpacity,
   },
 
   cardContent: {
@@ -179,20 +178,18 @@ const styles = StyleSheet.create({
 
   cardText: {
     flex: 1,
-    paddingRight: 20,
+    paddingRight: spacing.xl,
   },
 
   cardTitle: {
-    fontSize: 19,
-    fontWeight: '600',
-    color: '#171717',
+    ...typography.cardTitle,
+    color: colors.text.primary,
   },
 
   cardDescription: {
     marginTop: 5,
-    fontSize: 14,
-    lineHeight: 20,
-    color: '#737373',
+    ...typography.small,
+    color: colors.text.secondary,
   },
 
   arrow: {

@@ -6,6 +6,12 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import {
+  colors,
+  spacing,
+  typography,
+} from '../theme';
+
 export function AboutScreen() {
   return (
     <SafeAreaView
@@ -75,33 +81,30 @@ export function AboutScreen() {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.background,
   },
 
   container: {
-    paddingHorizontal: 24,
-    paddingTop: 16,
-    paddingBottom: 48,
+    paddingHorizontal: spacing.xxl,
+    paddingTop: spacing.lg,
+    paddingBottom: spacing.section,
   },
 
   intro: {
-    marginBottom: 34,
+    marginBottom: spacing.xxxl,
   },
 
   title: {
-    fontSize: 27,
-    lineHeight: 34,
-    fontWeight: '600',
-    letterSpacing: -0.4,
-    color: '#171717',
+    ...typography.screenTitle,
+    color: colors.text.primary,
   },
 
   subtitle: {
-    marginTop: 8,
+    marginTop: spacing.sm,
     maxWidth: 440,
     fontSize: 15,
     lineHeight: 22,
-    color: '#737373',
+    color: colors.text.secondary,
   },
 
   content: {
@@ -109,23 +112,22 @@ const styles = StyleSheet.create({
   },
 
   paragraph: {
-    marginBottom: 20,
-    fontSize: 16,
-    lineHeight: 26,
-    color: '#333333',
+    marginBottom: spacing.xl,
+    ...typography.articleBody,
+    color: colors.text.body,
   },
 
   separator: {
     height: StyleSheet.hairlineWidth,
-    marginTop: 4,
-    marginBottom: 24,
-    backgroundColor: '#D9D9D9',
+    marginTop: spacing.xs,
+    marginBottom: spacing.xxl,
+    backgroundColor: colors.border,
   },
 
   signature: {
-    marginTop: 8,
+    marginTop: spacing.sm,
     fontSize: 15,
     fontWeight: '600',
-    color: '#171717',
+    color: colors.text.primary,
   },
 });

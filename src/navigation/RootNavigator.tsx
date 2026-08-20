@@ -12,6 +12,7 @@ import { AuthorsScreen } from '../screens/AuthorsScreen';
 import { GraduationScreen } from '../screens/GraduationScreen';
 import { HomeScreen } from '../screens/HomeScreen';
 import { PostDetailScreen } from '../screens/PostDetailScreen';
+import { colors } from '../theme';
 import { RootStackParamList } from './navigationTypes';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -21,10 +22,10 @@ const navigationTheme = {
 
   colors: {
     ...DefaultTheme.colors,
-    background: '#FFFFFF',
-    card: '#FFFFFF',
-    text: '#171717',
-    border: '#E5E5E5',
+    background: colors.background,
+    card: colors.background,
+    text: colors.text.primary,
+    border: colors.border,
   },
 };
 
@@ -41,7 +42,7 @@ export function RootNavigator() {
             fontWeight: '600',
           },
           contentStyle: {
-            backgroundColor: '#FFFFFF',
+            backgroundColor: colors.background,
           },
         }}
       >

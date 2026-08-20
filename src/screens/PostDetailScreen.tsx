@@ -15,6 +15,11 @@ import { ErrorState } from '../components/ErrorState';
 import { LoadingState } from '../components/LoadingState';
 import { usePosts } from '../hooks/usePosts';
 import { RootStackParamList } from '../navigation/navigationTypes';
+import {
+  colors,
+  spacing,
+  typography,
+} from '../theme';
 
 type Props = NativeStackScreenProps<
   RootStackParamList,
@@ -45,7 +50,7 @@ export function PostDetailScreen({ route }: Props) {
   const post = getPostById(postId);
 
   const contentWidth = Math.max(
-    width - 48,
+    width - spacing.section,
     0,
   );
 
@@ -156,9 +161,8 @@ export function PostDetailScreen({ route }: Props) {
 }
 
 const htmlBaseStyle = {
-  fontSize: 16,
-  lineHeight: 26,
-  color: '#2B2B2B',
+  ...typography.articleBody,
+  color: colors.text.body,
 };
 
 const htmlTagsStyles = {
@@ -182,7 +186,7 @@ const htmlTagsStyles = {
     fontSize: 23,
     lineHeight: 30,
     fontWeight: '600' as const,
-    color: '#171717',
+    color: colors.text.primary,
   },
 
   h2: {
@@ -191,23 +195,21 @@ const htmlTagsStyles = {
     fontSize: 21,
     lineHeight: 28,
     fontWeight: '600' as const,
-    color: '#171717',
+    color: colors.text.primary,
   },
 
   h3: {
-    marginTop: 24,
-    marginBottom: 10,
-    fontSize: 19,
-    lineHeight: 26,
-    fontWeight: '600' as const,
-    color: '#171717',
+    marginTop: spacing.xxl,
+    marginBottom: spacing.sm,
+    ...typography.cardTitle,
+    color: colors.text.primary,
   },
 
   img: {
     maxWidth: '100%',
     height: 'auto',
-    marginTop: 12,
-    marginBottom: 16,
+    marginTop: spacing.md,
+    marginBottom: spacing.lg,
   },
 
   table: {
@@ -218,26 +220,26 @@ const htmlTagsStyles = {
     marginTop: 18,
     marginBottom: 18,
     marginLeft: 0,
-    paddingLeft: 16,
+    paddingLeft: spacing.lg,
     borderLeftWidth: 2,
-    borderLeftColor: '#D9D9D9',
+    borderLeftColor: colors.border,
     color: '#555555',
   },
 
   ul: {
-    marginTop: 8,
+    marginTop: spacing.sm,
     marginBottom: 18,
-    paddingLeft: 20,
+    paddingLeft: spacing.xl,
   },
 
   ol: {
-    marginTop: 8,
+    marginTop: spacing.sm,
     marginBottom: 18,
-    paddingLeft: 20,
+    paddingLeft: spacing.xl,
   },
 
   li: {
-    marginBottom: 8,
+    marginBottom: spacing.sm,
   },
 
   a: {
@@ -248,13 +250,13 @@ const htmlTagsStyles = {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.background,
   },
 
   container: {
-    paddingHorizontal: 24,
-    paddingTop: 16,
-    paddingBottom: 48,
+    paddingHorizontal: spacing.xxl,
+    paddingTop: spacing.lg,
+    paddingBottom: spacing.section,
   },
 
   header: {
@@ -262,45 +264,41 @@ const styles = StyleSheet.create({
   },
 
   title: {
-    fontSize: 27,
-    lineHeight: 35,
-    fontWeight: '600',
-    letterSpacing: -0.4,
-    color: '#171717',
+    ...typography.screenTitle,
+    color: colors.text.primary,
   },
 
   labels: {
-    marginTop: 12,
-    fontSize: 13,
-    lineHeight: 19,
-    color: '#737373',
+    marginTop: spacing.md,
+    ...typography.caption,
+    color: colors.text.secondary,
   },
 
   separator: {
     height: StyleSheet.hairlineWidth,
-    marginBottom: 24,
-    backgroundColor: '#D9D9D9',
+    marginBottom: spacing.xxl,
+    backgroundColor: colors.border,
   },
 
   center: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 24,
-    backgroundColor: '#FFFFFF',
+    padding: spacing.xxl,
+    backgroundColor: colors.background,
   },
 
   statusText: {
-    marginTop: 10,
-    fontSize: 14,
+    marginTop: spacing.sm,
+    ...typography.small,
     textAlign: 'center',
-    color: '#737373',
+    color: colors.text.secondary,
   },
 
   errorTitle: {
     fontSize: 17,
     fontWeight: '600',
     textAlign: 'center',
-    color: '#171717',
+    color: colors.text.primary,
   },
 });

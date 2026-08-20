@@ -14,6 +14,11 @@ import { NavigationListItem } from '../components/NavigationListItem';
 import { usePosts } from '../hooks/usePosts';
 import { RootStackParamList } from '../navigation/navigationTypes';
 import { getAuthorsFromPosts } from '../services/postClassifier';
+import {
+  colors,
+  spacing,
+  typography,
+} from '../theme';
 
 type Props = NativeStackScreenProps<
   RootStackParamList,
@@ -99,35 +104,33 @@ export function AuthorsScreen({ navigation }: Props) {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.background,
   },
 
   list: {
-    paddingHorizontal: 24,
-    paddingBottom: 40,
+    paddingHorizontal: spacing.xxl,
+    paddingBottom: spacing.huge,
   },
 
   intro: {
-    paddingTop: 12,
-    paddingBottom: 24,
+    paddingTop: spacing.md,
+    paddingBottom: spacing.xxl,
   },
 
   introText: {
-    fontSize: 15,
-    lineHeight: 22,
-    color: '#737373',
+    ...typography.small,
+    color: colors.text.secondary,
   },
 
   warning: {
-    marginTop: 10,
-    fontSize: 13,
-    lineHeight: 19,
-    color: '#737373',
+    marginTop: spacing.sm,
+    ...typography.caption,
+    color: colors.text.secondary,
   },
 
   emptyText: {
-    paddingVertical: 24,
+    paddingVertical: spacing.xxl,
     fontSize: 15,
-    color: '#737373',
+    color: colors.text.secondary,
   },
 });

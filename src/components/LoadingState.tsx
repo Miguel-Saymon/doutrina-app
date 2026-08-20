@@ -5,6 +5,12 @@ import {
   View,
 } from 'react-native';
 
+import {
+  colors,
+  spacing,
+  typography,
+} from '../theme';
+
 type Props = {
   message?: string;
 };
@@ -28,14 +34,14 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 24,
-    backgroundColor: '#FFFFFF',
+    padding: spacing.xxl,
+    backgroundColor: colors.background,
   },
 
   message: {
-    marginTop: 10,
-    fontSize: 14,
+    marginTop: spacing.sm,
+    ...typography.small,
     textAlign: 'center',
-    color: '#737373',
+    color: colors.text.secondary,
   },
 });

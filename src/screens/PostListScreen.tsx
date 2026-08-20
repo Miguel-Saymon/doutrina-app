@@ -11,6 +11,11 @@ import { ErrorState } from '../components/ErrorState';
 import { LoadingState } from '../components/LoadingState';
 import { PostListItem } from '../components/PostListItem';
 import { usePosts } from '../hooks/usePosts';
+import {
+  colors,
+  spacing,
+  typography,
+} from '../theme';
 import { Post } from '../types/post';
 
 type Props = {
@@ -106,41 +111,38 @@ export function PostListScreen({
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.background,
   },
 
   list: {
-    paddingHorizontal: 24,
-    paddingBottom: 40,
+    paddingHorizontal: spacing.xxl,
+    paddingBottom: spacing.huge,
   },
 
   intro: {
-    paddingTop: 12,
-    paddingBottom: 24,
+    paddingTop: spacing.md,
+    paddingBottom: spacing.xxl,
   },
 
   contextTitle: {
-    fontSize: 22,
-    lineHeight: 29,
-    fontWeight: '600',
-    color: '#171717',
+    ...typography.sectionTitle,
+    color: colors.text.primary,
   },
 
   count: {
     marginTop: 6,
-    fontSize: 14,
-    color: '#737373',
+    ...typography.small,
+    color: colors.text.secondary,
   },
 
   warning: {
-    marginTop: 10,
-    fontSize: 13,
-    lineHeight: 19,
-    color: '#737373',
+    marginTop: spacing.sm,
+    ...typography.caption,
+    color: colors.text.secondary,
   },
 
   emptyText: {
     fontSize: 15,
-    color: '#737373',
+    color: colors.text.secondary,
   },
 });
