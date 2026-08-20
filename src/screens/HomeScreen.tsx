@@ -33,14 +33,18 @@ function NavigationCard({
     >
       <View style={styles.cardContent}>
         <View style={styles.cardText}>
-          <Text style={styles.cardTitle}>{title}</Text>
+          <Text style={styles.cardTitle}>
+            {title}
+          </Text>
 
           <Text style={styles.cardDescription}>
             {description}
           </Text>
         </View>
 
-        <Text style={styles.arrow}>›</Text>
+        <Text style={styles.arrow}>
+          ›
+        </Text>
       </View>
     </Pressable>
   );
@@ -54,7 +58,9 @@ export function HomeScreen({ navigation }: Props) {
         showsVerticalScrollIndicator={false}
       >
         <View style={styles.header}>
-          <Text style={styles.brand}>doutrina.net</Text>
+          <Text style={styles.brand}>
+            doutrina.net
+          </Text>
 
           <Text style={styles.subtitle}>
             Público · Democrático · Gratuito
@@ -87,8 +93,14 @@ export function HomeScreen({ navigation }: Props) {
 
           <NavigationCard
             title="Graduação"
-            description="Acesse conteúdos acadêmicos de graduação"
+            description="Conteúdos acadêmicos em desenvolvimento"
             onPress={() => navigation.navigate('Graduation')}
+          />
+
+          <NavigationCard
+            title="Sobre Nós"
+            description="Conheça o propósito do doutrina.net"
+            onPress={() => navigation.navigate('About')}
           />
         </View>
       </ScrollView>

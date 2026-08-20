@@ -4,11 +4,12 @@ import {
 } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
+import { AboutScreen } from '../screens/AboutScreen';
 import { AreaPostsScreen } from '../screens/AreaPostsScreen';
 import { AreasScreen } from '../screens/AreasScreen';
 import { AuthorPostsScreen } from '../screens/AuthorPostsScreen';
 import { AuthorsScreen } from '../screens/AuthorsScreen';
-import { CategoryPlaceholderScreen } from '../screens/CategoryPlaceholderScreen';
+import { GraduationScreen } from '../screens/GraduationScreen';
 import { HomeScreen } from '../screens/HomeScreen';
 import { RootStackParamList } from './navigationTypes';
 
@@ -84,14 +85,19 @@ export function RootNavigator() {
 
         <Stack.Screen
           name="Graduation"
+          component={GraduationScreen}
           options={{
             title: 'Graduação',
           }}
-        >
-          {() => (
-            <CategoryPlaceholderScreen title="Graduação" />
-          )}
-        </Stack.Screen>
+        />
+
+        <Stack.Screen
+          name="About"
+          component={AboutScreen}
+          options={{
+            title: 'Sobre Nós',
+          }}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );

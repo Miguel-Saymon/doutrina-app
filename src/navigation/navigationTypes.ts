@@ -14,4 +14,6 @@ export type RootStackParamList = {
   };
 
   Graduation: undefined;
+
+  About: undefined;
 };
