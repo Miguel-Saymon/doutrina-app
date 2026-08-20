@@ -1,8 +1,10 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   createContext,
   ReactNode,
   useCallback,
   useContext,
+  useEffect,
   useMemo,
   useRef,
   useState,
@@ -28,7 +30,14 @@ type Props = {
   children: ReactNode;
 };
 
+type PersistedPostsCache = {
+  posts: Post[];
+  fetchedAt: number;
+};
+
 const CACHE_TTL_MS = 5 * 60 * 1000;
+
+const POSTS_CACHE_KEY = '@doutrina/posts-cache';
 
 const PostsContext = createContext<PostsContextValue | undefined>(
   undefined,
@@ -36,12 +45,78 @@ const PostsContext = createContext<PostsContextValue | undefined>(
 
 export function PostsProvider({ children }: Props) {
   const [posts, setPosts] = useState<Post[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const [storageReady, setStorageReady] = useState(false);
+
   const lastFetchedAtRef = useRef<number | null>(null);
   const requestInProgressRef = useRef<Promise<Post[]> | null>(null);
+
+  const persistCache = useCallback(
+    async (
+      postsToPersist: Post[],
+      fetchedAt: number,
+    ) => {
+      const cache: PersistedPostsCache = {
+        posts: postsToPersist,
+        fetchedAt,
+      };
+
+      try {
+        await AsyncStorage.setItem(
+          POSTS_CACHE_KEY,
+          JSON.stringify(cache),
+        );
+      } catch (err) {
+        console.warn(
+          'Não foi possível salvar o cache local:',
+          err,
+        );
+      }
+    },
+    [],
+  );
+
+  const restoreCache = useCallback(async () => {
+    try {
+      const storedValue =
+        await AsyncStorage.getItem(POSTS_CACHE_KEY);
+
+      if (!storedValue) {
+        return;
+      }
+
+      const cache =
+        JSON.parse(storedValue) as PersistedPostsCache;
+
+      if (
+        !Array.isArray(cache.posts) ||
+        typeof cache.fetchedAt !== 'number'
+      ) {
+        return;
+      }
+
+      setPosts(cache.posts);
+      lastFetchedAtRef.current = cache.fetchedAt;
+    } catch (err) {
+      console.warn(
+        'Não foi possível restaurar o cache local:',
+        err,
+      );
+    }
+  }, []);
+
+  useEffect(() => {
+    async function initializeStorage() {
+      await restoreCache();
+
+      setStorageReady(true);
+    }
+
+    initializeStorage();
+  }, [restoreCache]);
 
   const fetchPosts = useCallback(async (): Promise<Post[]> => {
     if (requestInProgressRef.current) {
@@ -75,7 +150,12 @@ export function PostsProvider({ children }: Props) {
   }, [posts.length]);
 
   const loadPosts = useCallback(async () => {
+    if (!storageReady) {
+      return;
+    }
+
     if (isCacheValid()) {
+      setLoading(false);
       return;
     }
 
@@ -84,9 +164,15 @@ export function PostsProvider({ children }: Props) {
       setError(null);
 
       const result = await fetchPosts();
+      const fetchedAt = Date.now();
 
       setPosts(result);
-      lastFetchedAtRef.current = Date.now();
+      lastFetchedAtRef.current = fetchedAt;
+
+      await persistCache(
+        result,
+        fetchedAt,
+      );
     } catch (err) {
       setError(
         err instanceof Error
@@ -96,7 +182,12 @@ export function PostsProvider({ children }: Props) {
     } finally {
       setLoading(false);
     }
-  }, [fetchPosts, isCacheValid]);
+  }, [
+    fetchPosts,
+    isCacheValid,
+    persistCache,
+    storageReady,
+  ]);
 
   const refreshPosts = useCallback(async () => {
     try {
@@ -104,9 +195,15 @@ export function PostsProvider({ children }: Props) {
       setError(null);
 
       const result = await fetchPosts();
+      const fetchedAt = Date.now();
 
       setPosts(result);
-      lastFetchedAtRef.current = Date.now();
+      lastFetchedAtRef.current = fetchedAt;
+
+      await persistCache(
+        result,
+        fetchedAt,
+      );
     } catch (err) {
       setError(
         err instanceof Error
@@ -116,7 +213,7 @@ export function PostsProvider({ children }: Props) {
     } finally {
       setRefreshing(false);
     }
-  }, [fetchPosts]);
+  }, [fetchPosts, persistCache]);
 
   const retry = useCallback(async () => {
     lastFetchedAtRef.current = null;
